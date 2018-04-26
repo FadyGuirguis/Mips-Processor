@@ -1,10 +1,10 @@
 module left_shifter_2(out, in);
 
-input [31:0] in;
-output reg [31:0] out;
+input [9:0] in;
+output reg [9:0] out;
 
 always @(in)
 begin
-	out <= in << 2;
+	out = in << 2;
 end
 endmodule

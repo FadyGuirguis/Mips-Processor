@@ -1,25 +1,82 @@
-module main(out_t, zero_flag_t, instruction);
-
-input [31:0] instruction;
-wire zero_flag;
-wire [31:0] out, read1, read2, imm, res;
-wire [4:0] write_reg;
-output [31:0] out_t;
-output zero_flag_t;
-wire clk, RegDst, Jump, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
-wire [1:0] alu_op;
-wire [3:0] select;
+module main();
+wire [9:0] inPC, outPC, outIncrement4, branchOutput, IFIDAddressOutput, branchOffset, EXMEMbranchOutput;
+wire [31:0] instructionMemoryOutput, IFIDInstructionOutput, readData1, readData2, writeData,
+offset, dataMemOut, MEMWBAluOut, MEMWBMemDataOut, regDataFinal;
+wire PCSrc, regWrite, RegDst, Jump, Branch, MemRead, MemtoReg,  MemWrite, ALUSrc, clk;
+wire [1:0] ALUOp;
+wire RegDstOut, JumpOut, BranchOut, MemReadOut, MemtoRegOut, MemWriteOut, ALUSrcOut, RegWriteOut,
+EXMEMBranchOut, EXMEMMemReadOut, EXMEMMemtoRegOut, EXMEMMemWriteOut,EXMEMRegWriteOut, EXMEMZeroOut, zeroResult,
+MEMWBMemtoRegOut, MEMWBRegWriteOut;
+wire [1:0] ALUOpOut;
+wire [9:0] addressOut, sign10Out, shifterOut, EXMEMbranchInput;
+wire [31:0] data1Out, data2Out, EXMEMAluOut, EXMEMReg2Out, aluIn2, aluResult;
+wire [31:0] sign32Out;
+wire [4:0] writeReg1Out, writeReg2Out, EXMEMwriteRegOut, EXMEMwriteRegIn, MEMWBwriteRegOut;
+wire [3:0] aluSelect;
 
 clock clock(clk);
-control control(RegDst, Jump, Branch, MemRead, MemtoReg, alu_op, MemWrite, ALUSrc, RegWrite, instruction[31:26], clk );
-sign_extend sign_extend(imm, instruction[15:0]);
-mux5 mux5_1(write_reg, instruction[20:16], instruction[15:11], RegDst);
-registers registers(read1, read2, instruction[25:21], instruction[20:16], write_reg, out, RegWrite);
-alu_control alu_control(select, instruction[5:0], alu_op);
-mux32 mux32_2(res, read2, imm, ALUSrc);
-alu alu(out, zero_flag, read1, res, instruction[10:6], select);
+//IF
+pc pc(outPC, inPC, clk);
+increment4 increment4(outIncrement4, outPC);
+mux10 mux10(inPC, outIncrement4, EXMEMbranchOutput, PCSrc);
+instruction_memory instruction_memory(instructionMemoryOutput, outPC);
+IFID IFID(IFIDAddressOutput, IFIDInstructionOutput, outIncrement4, instructionMemoryOutput, clk);
 
-assign out_t = out;
-assign zero_flag_t = zero_flag;
+//ID
+registers registers(readData1, readData2, IFIDInstructionOutput[25:21], IFIDInstructionOutput[20:16],
+MEMWBwriteRegOut, regDataFinal, MEMWBRegWriteOut);
+sign_extend sign_extend(offset, IFIDInstructionOutput[15:0]);
+sign_extend_10 sign_extend_10(branchOffset, IFIDInstructionOutput[15:0]);
+control control(RegDst, Jump, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, regWrite, IFIDInstructionOutput[31:26]);
+IDEX IDEX(RegDstOut, JumpOut, BranchOut, MemReadOut, MemtoRegOut, ALUOpOut, MemWriteOut, ALUSrcOut, RegWriteOut,
+addressOut,
+data1Out, data2Out,
+sign32Out, sign10Out,
+writeReg1Out, writeReg2Out,
+RegDst, Jump, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, regWrite,
+IFIDAddressOutput,
+readData1, readData2,
+offset, branchOffset,
+IFIDInstructionOutput[20:16], IFIDInstructionOutput[15:11], clk);
+
+//EX
+alu_control alu_control(aluSelect, sign32Out[5:0], ALUOpOut);
+left_shifter_2 left_shifter_2(shifterOut, sign10Out);
+adder10 adder10 (EXMEMbranchInput, addressOut, shifterOut);
+mux5 mux5 (EXMEMwriteRegIn, writeReg1Out, writeReg2Out, RegDstOut);
+mux32 mux32_1 (aluIn2, data2Out, sign32Out, ALUSrcOut);
+alu alu(aluResult, zeroResult, data1Out, aluIn2, sign32Out[10:6], aluSelect);
+EXMEM EXMEM(EXMEMBranchOut, EXMEMMemReadOut, EXMEMMemtoRegOut, EXMEMMemWriteOut,EXMEMRegWriteOut,
+EXMEMbranchOutput,
+EXMEMZeroOut,
+EXMEMAluOut,
+EXMEMReg2Out,
+EXMEMwriteRegOut,
+BranchOut, MemReadOut, MemtoRegOut, MemWriteOut, RegWriteOut,
+EXMEMbranchInput,
+zeroResult,
+aluResult,
+data2Out,
+EXMEMwriteRegIn,
+clk);
+
+//MEM
+and(PCSrc, EXMEMZeroOut, EXMEMBranchOut);
+dataMem dataMem(dataMemOut, EXMEMAluOut[9:0], EXMEMReg2Out, EXMEMMemWriteOut, EXMEMMemReadOut);
+MEMWB MEMWB(MEMWBMemtoRegOut, MEMWBRegWriteOut,
+MEMWBAluOut,
+MEMWBMemDataOut,
+MEMWBwriteRegOut,
+EXMEMMemtoRegOut, EXMEMRegWriteOut,
+clk,
+EXMEMAluOut,
+dataMemOut,
+EXMEMwriteRegOut);
+
+//WB
+mux32 mux32_2(regDataFinal,  MEMWBAluOut, MEMWBMemDataOut, MEMWBMemtoRegOut);
+
+
+
 
 endmodule

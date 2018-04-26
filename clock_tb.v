@@ -6,11 +6,11 @@ module clock_tb();
 
 	clock mut(t_clk);
 
-	always @ (posedge t_clk or negedge t_clk)
+	always @ (posedge t_clk)
 		$display("time  ",$time, "  clk = " ,t_clk);
 	
 	
-	initial #5000 $finish;
+	
 
 
 

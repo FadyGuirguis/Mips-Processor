@@ -16,7 +16,7 @@ end
 always @ (reg1, reg2, select)
 begin
 	case (select)
-	4'b0010: out = reg1 + reg2; //add
+	4'b0010: out = reg1 + reg2;//add
 	4'b0110: out = reg1 - reg2; //sub
 	4'b0000: out = reg1 & reg2; //and
 	4'b0001: out = reg1 | reg2; //or
@@ -27,7 +27,6 @@ begin
 	4'b1011: out = reg2 << shamt; //sll
 	4'b1100: out = reg2 >> shamt; //srl
 	endcase
-	
 end
 
 endmodule

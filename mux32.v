@@ -4,12 +4,12 @@ output reg [31:0] out;
 input [31:0] a, b;
 input select;
 
-always @ (select,a, b)
+always @ (select, a, b)
 begin
 	if (select == 0)
-		out <= a;
+		out = a;
 	else
-		out <= b;
+		out = b;
 end 
 
 endmodule
