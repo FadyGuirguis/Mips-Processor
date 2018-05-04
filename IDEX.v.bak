@@ -10,14 +10,14 @@ sign32In, sign10In,
 writeReg1In, writeReg2In,
 clk);
 
-output reg RegDstOut, JumpOut, BranchOut, MemtoRegOut, MemWriteOut, ALUSrcOut, RegWriteOut;
-output reg [1:0] MemReadOut, ALUOpOut;
+output reg RegDstOut, JumpOut, BranchOut, MemReadOut, MemtoRegOut, MemWriteOut, ALUSrcOut, RegWriteOut;
+output reg [1:0] ALUOpOut;
 output reg [9:0] addressOut, sign10Out;
 output reg [31:0] data1Out, data2Out;
 output reg [31:0] sign32Out;
 output reg [4:0] writeReg1Out, writeReg2Out;
-input RegDstIn, JumpIn, BranchIn, MemtoRegIn, MemWriteIn, ALUSrcIn, RegWriteIn, clk;
-input [1:0] MemReadIn, ALUOpIn;
+input RegDstIn, JumpIn, BranchIn, MemReadIn, MemtoRegIn, MemWriteIn, ALUSrcIn, RegWriteIn, clk;
+input [1:0] ALUOpIn;
 input [9:0] addressIn, sign10In;
 input [31:0] data1In, data2In;
 input [31:0] sign32In;

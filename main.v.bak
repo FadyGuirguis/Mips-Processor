@@ -2,10 +2,10 @@ module main();
 wire [9:0] inPC, outPC, outIncrement4, branchOutput, IFIDAddressOutput, branchOffset, EXMEMbranchOutput;
 wire [31:0] instructionMemoryOutput, IFIDInstructionOutput, readData1, readData2, writeData,
 offset, dataMemOut, MEMWBAluOut, MEMWBMemDataOut, regDataFinal;
-wire PCSrc, regWrite, RegDst, Jump, Branch, MemtoReg,  MemWrite, ALUSrc, clk;
-wire [1:0] MemRead, MemReadOut, EXMEMMemReadOut, ALUOp;
-wire RegDstOut, JumpOut, BranchOut, MemtoRegOut, MemWriteOut, ALUSrcOut, RegWriteOut,
-EXMEMBranchOut, EXMEMMemtoRegOut, EXMEMMemWriteOut,EXMEMRegWriteOut, EXMEMZeroOut, zeroResult,
+wire PCSrc, regWrite, RegDst, Jump, Branch, MemRead, MemtoReg,  MemWrite, ALUSrc, clk;
+wire [1:0] ALUOp;
+wire RegDstOut, JumpOut, BranchOut, MemReadOut, MemtoRegOut, MemWriteOut, ALUSrcOut, RegWriteOut,
+EXMEMBranchOut, EXMEMMemReadOut, EXMEMMemtoRegOut, EXMEMMemWriteOut,EXMEMRegWriteOut, EXMEMZeroOut, zeroResult,
 MEMWBMemtoRegOut, MEMWBRegWriteOut;
 wire [1:0] ALUOpOut;
 wire [9:0] addressOut, sign10Out, shifterOut, EXMEMbranchInput;

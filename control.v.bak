@@ -1,7 +1,7 @@
 module control(RegDst, Jump, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite, Instruction);
 
-	output reg RegDst, Jump, Branch, MemtoReg, MemWrite, ALUSrc, RegWrite;
-	output reg[1:0] MemRead, ALUOp;
+	output reg RegDst, Jump, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
+	output reg[1:0] ALUOp;
 	input [5:0] Instruction;
 
 	always @ (Instruction)
@@ -83,7 +83,7 @@ module control(RegDst, Jump, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc,
 			RegDst = 0;
 			Jump = 0;
 			Branch = 0;
-			MemRead = 2;
+			MemRead = 1;
 			MemtoReg = 1;
 			ALUOp = 0;
 			MemWrite = 0;
@@ -91,20 +91,6 @@ module control(RegDst, Jump, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc,
 			RegWrite = 1;
 		end
 
-		//lhu ---> Hex25
-		else if(Instruction == 6'h25)
-		begin
-			RegDst = 0;
-			Jump = 0;
-			Branch = 0;
-			MemRead = 3;
-			MemtoReg = 1;
-			ALUOp = 0;
-			MemWrite = 0;
-			ALUSrc = 1;
-			RegWrite = 1;
-		end
-		
 		//sh ---> Hex 29, dec 41 
 		else if(Instruction == 6'h29 )
 		begin

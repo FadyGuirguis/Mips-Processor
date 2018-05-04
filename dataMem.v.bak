@@ -39,12 +39,12 @@ module dataMem(dataOut, address, dataIn, memWrite, memRead);
 		
 		else if(memRead == 2)
 		begin
-			dataOut = {{16{memory[address][7]}},memory[address+2],memory[address+3]}; 
+			dataOut = {{16{memory[address][7]}}, memory[address+2],memory[address+3]}; 
 		end
 		
 		else if(memRead == 3)
 		begin
-			dataOut = {16'd0,memory[address+2],memory[address+3]};
+			dataOut = {16'd0, memory[address+2],memory[address+3]};
 		end
     	end
 

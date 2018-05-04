@@ -14,14 +14,12 @@ writeRegIn,
 clk
 );
 
-output reg BranchOut, MemtoRegOut, MemWriteOut, RegWriteOut, ZeroOut;
-output reg [1:0] MemReadOut;
+output reg BranchOut, MemReadOut, MemtoRegOut, MemWriteOut, RegWriteOut, ZeroOut;
 output reg [9:0] branchOutput;
 output reg [31:0] AluOut, Reg2Out;
 output reg [4:0] writeRegOut;
 
-input BranchIn, MemtoRegIn, MemWriteIn, RegWriteIn, ZeroIn, clk;
-input [1:0] MemReadIn;
+input BranchIn, MemReadIn, MemtoRegIn, MemWriteIn, RegWriteIn, ZeroIn, clk;
 input [9:0] branchInput;
 input [31:0] AluIn, Reg2In;
 input [4:0] writeRegIn;
