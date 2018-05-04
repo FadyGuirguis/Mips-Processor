@@ -7,7 +7,7 @@ module clock(clk);
 	initial 
 	begin 
 		clk = 0;
-		repeat(41)
+		repeat(31)
 			#250 clk = ~clk; 
 	end
 

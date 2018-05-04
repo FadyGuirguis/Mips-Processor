@@ -42,7 +42,7 @@ begin
 	sign32Out <= sign32In;
 	writeReg1Out <= writeReg1In;
 	writeReg2Out <= writeReg2In;
-	
+	srcRegOut <= srcReg;
 	
 end
 

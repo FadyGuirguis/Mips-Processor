@@ -18,6 +18,8 @@ begin
 	arr[2] = 1;
 	arr[3] = 1;
 	arr[4] = 1;
+	arr[5] = 0;
+	arr[6] = 1;
 end
 
 assign readData1 = arr[readRegister1];
@@ -25,9 +27,10 @@ assign readData2 = arr[readRegister2];
 
 always @ (regWrite, writeData)
 begin
-	if(regWrite)
+	if(regWrite & regWrite > 0)
 		arr[writeRegister] = writeData;
 	else
 		arr[writeRegister] = arr[writeRegister];
+
 end
 endmodule
