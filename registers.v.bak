@@ -28,10 +28,7 @@ assign readData2 = arr[readRegister2];
 always @ (regWrite, writeData)
 begin
 	if(regWrite & regWrite > 0)
-	begin
 		arr[writeRegister] = writeData;
-		$display("register %d value is %d", writeRegister, writeData);
-	end
 	else
 		arr[writeRegister] = arr[writeRegister];
 

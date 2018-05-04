@@ -15,4 +15,11 @@ begin
 	address <= addressInput;
 	instruction <= instructionInput;
 end
+
+always @ (instructionOutput)
+begin
+	
+	$display("new address: %b", addressOutput);
+	$display("new inst: %b", instructionOutput);
+end
 endmodule

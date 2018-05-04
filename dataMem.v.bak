@@ -30,10 +30,6 @@ module dataMem(dataOut, address, dataIn, memWrite, memRead);
 			memory[address+1] = dataIn[23:16];
 			memory[address+2] = dataIn[15:8];
 			memory[address+3] = dataIn[7:0];
-			$display("memory[%d] value is %b", address, dataIn[31:24]);
-			$display("memory[%d] value is %b", address+1, dataIn[23:16]);
-			$display("memory[%d] value is %b", address+2, dataIn[15:8]);
-			$display("memory[%d] value is %b", address+3, dataIn[7:0]);
 		end
         	
         	if(memRead == 1)
