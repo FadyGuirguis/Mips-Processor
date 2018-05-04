@@ -3,15 +3,15 @@ wire [9:0] inPC, outPC, outIncrement4, branchOutput, IFIDAddressOutput, branchOf
 wire [31:0] instructionMemoryOutput, IFIDInstructionOutput, readData1, readData2, writeData,
 offset, dataMemOut, MEMWBAluOut, MEMWBMemDataOut, regDataFinal;
 wire PCSrc, regWrite, RegDst, Jump, Branch, MemtoReg,  MemWrite, ALUSrc, clk;
-wire [1:0] MemRead, MemReadOut, EXMEMMemReadOut, ALUOp;
+wire [1:0] MemRead, MemReadOut, EXMEMMemReadOut, ALUOp, forwardA, forwardB;
 wire RegDstOut, JumpOut, BranchOut, MemtoRegOut, MemWriteOut, ALUSrcOut, RegWriteOut,
 EXMEMBranchOut, EXMEMMemtoRegOut, EXMEMMemWriteOut,EXMEMRegWriteOut, EXMEMZeroOut, zeroResult,
 MEMWBMemtoRegOut, MEMWBRegWriteOut;
 wire [1:0] ALUOpOut;
 wire [9:0] addressOut, sign10Out, shifterOut, EXMEMbranchInput;
-wire [31:0] data1Out, data2Out, EXMEMAluOut, EXMEMReg2Out, aluIn2, aluResult;
+wire [31:0] data1Out, data2Out, EXMEMAluOut, EXMEMReg2Out, aluIn2, aluResult, forward1Out, forward2Out;
 wire [31:0] sign32Out;
-wire [4:0] writeReg1Out, writeReg2Out, EXMEMwriteRegOut, EXMEMwriteRegIn, MEMWBwriteRegOut;
+wire [4:0] writeReg1Out, writeReg2Out, srcRegOut, EXMEMwriteRegOut, EXMEMwriteRegIn, MEMWBwriteRegOut;
 wire [3:0] aluSelect;
 
 clock clock(clk);
@@ -32,20 +32,24 @@ IDEX IDEX(RegDstOut, JumpOut, BranchOut, MemReadOut, MemtoRegOut, ALUOpOut, MemW
 addressOut,
 data1Out, data2Out,
 sign32Out, sign10Out,
-writeReg1Out, writeReg2Out,
+writeReg1Out, writeReg2Out, srcRegOut,
 RegDst, Jump, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, regWrite,
 IFIDAddressOutput,
 readData1, readData2,
 offset, branchOffset,
-IFIDInstructionOutput[20:16], IFIDInstructionOutput[15:11], clk);
+IFIDInstructionOutput[20:16], IFIDInstructionOutput[15:11], IFIDInstructionOutput[25:21], clk);
 
 //EX
 alu_control alu_control(aluSelect, sign32Out[5:0], ALUOpOut);
 left_shifter_2 left_shifter_2(shifterOut, sign10Out);
 adder10 adder10 (EXMEMbranchInput, addressOut, shifterOut);
 mux5 mux5 (EXMEMwriteRegIn, writeReg1Out, writeReg2Out, RegDstOut);
-mux32 mux32_1 (aluIn2, data2Out, sign32Out, ALUSrcOut);
-alu alu(aluResult, zeroResult, data1Out, aluIn2, sign32Out[10:6], aluSelect);
+mux32 mux32_1 (aluIn2, forward2Out, sign32Out, ALUSrcOut);
+forwardingUnit forwardingUnit(forwardA, forwardB, srcRegOut, writeReg1Out, EXMEMwriteRegOut, MEMWBwriteRegOut,
+EXMEMRegWriteOut, MEMWBRegWriteOut);
+muxALU muxALU_1(forward1Out, data1Out, EXMEMAluOut, regDataFinal, forwardA);
+muxALU muxALU_2(forward2Out, data2Out, EXMEMAluOut, regDataFinal, forwardB);
+alu alu(aluResult, zeroResult, forward1Out, aluIn2, sign32Out[10:6], aluSelect);
 EXMEM EXMEM(EXMEMBranchOut, EXMEMMemReadOut, EXMEMMemtoRegOut, EXMEMMemWriteOut,EXMEMRegWriteOut,
 EXMEMbranchOutput,
 EXMEMZeroOut,
